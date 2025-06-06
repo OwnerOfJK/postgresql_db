@@ -1,0 +1,40 @@
+networks:
+  piscineds:
+
+services:
+  db:
+    image: postgres:17
+    container_name: postgres_db_02
+    networks:
+      - piscineds
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+# volumes:
+#   - ./config/postgresql.conf:/etc/postgresql/postgresql.conf
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_02
+    networks:
+      - piscineds
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    restart: unless-stopped
+    depends_on:
+      - db
+
+volumes:
+  db-data:
+  pgadmin-data:
