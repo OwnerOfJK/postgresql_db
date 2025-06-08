@@ -18,7 +18,7 @@ def main():
     print("Starting the union")
     conn, cursor = connect_to_db();
     drop_tables(cursor, ["customers"])
-    table_names = get_existing_tables(cursor)
+    table_names = get_existing_tables(cursor, exclude_table="item")
     print(f"Found tables: {table_names}")
     create_union(cursor, table_names)
     print_tables_length(cursor)
