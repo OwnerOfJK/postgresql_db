@@ -43,13 +43,6 @@ def main():
     conn, cursor = connect_to_db()
     drop_tables(cursor, ["customers_no_duplicates"])
     
-    table_names = get_existing_tables(cursor)
-    print(f"Found tables: {table_names}")
-    
-    if "customers" not in table_names:
-        print("No 'customers' table found. Exiting.")
-        return
-    
     remove_duplicates(cursor, 'customers')
     print_tables_length(cursor, ['customers_no_duplicates'])
     filter_for_dup_dates(cursor, 'customers_no_duplicates')
