@@ -26,15 +26,21 @@ def infer_columns_from_csv(csv_path: str):
                 columns.append((col, "BIGINT"))
             case "user_session":
                 columns.append((col, "UUID"))
+            case "category_id":
+                columns.append((col, "BIGINT"))
+            case "category_code":
+                columns.append((col, "VARCHAR(100)"))
+            case "brand":
+                columns.append((col, "VARCHAR(100)"))
             case _:
                 columns.append((col, "TEXT"))
     return columns
 
 def main():
     print("Starting the creation of tables from CSV files")
-    data_dir = "./customer"
+    data_dir = sys.argv[1]
     conn, cursor = connect_to_db()
-    drop_tables(cursor)
+    drop_tables(cursor, ["customers"])
     csv_files = get_csv_files(data_dir)
 
     table_names = []
