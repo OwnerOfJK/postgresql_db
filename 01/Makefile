@@ -8,7 +8,8 @@ clean:
 	cd ex00 && docker system prune -a --volumes
 
 create:
-	cd ex00 && python3 automatic_table.py
+	cd ex00 && python3 automatic_table.py ./customer
+	cd ex00 && python3 automatic_table.py ./item
 
 union:
 	cd ex01 && python3 customers_table.py
