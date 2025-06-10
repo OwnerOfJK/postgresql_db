@@ -37,15 +37,6 @@ def left_join(cursor, table_name: str, table1: str, table2: str, join_column: st
 def main():
     print("Starting the fusion of customers and item tables")
     conn, cursor = connect_to_db()
-    drop_tables(cursor, ['item'])
-    path = get_csv_files("./item")
-    create_table(cursor, 'item', [
-        ('product_id', 'INTEGER'),
-        ('category_id', 'BIGINT'),
-        ('category_code', 'VARCHAR(100)'),
-        ('brand', 'VARCHAR(100)')
-    ])
-    fill_table(cursor, path[0], "item")
     print_tables_length(cursor, ['customers', 'item'])
     left_join(cursor, 'customer_item_join','customers', 'item', 'product_id')
     replace_table(cursor, 'customers', 'customer_item_join')

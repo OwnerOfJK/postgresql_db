@@ -30,9 +30,23 @@ def drop_tables(cursor, table_names=None):
         cursor.execute(sql.SQL("DROP TABLE IF EXISTS {}").format(sql.Identifier(table)))
         print(f"Dropped table: {table}")
 
-def get_existing_tables(cursor):
-    cursor.execute("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES " \
-    "WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_SCHEMA='public';")
+def get_existing_tables(cursor, exclude_table=None):
+    if exclude_table:
+        cursor.execute("""
+            SELECT TABLE_NAME 
+            FROM INFORMATION_SCHEMA.TABLES 
+            WHERE TABLE_TYPE = 'BASE TABLE' 
+              AND TABLE_SCHEMA = 'public' 
+              AND TABLE_NAME != %s;
+        """, (exclude_table,))
+    else:
+        cursor.execute("""
+            SELECT TABLE_NAME 
+            FROM INFORMATION_SCHEMA.TABLES 
+            WHERE TABLE_TYPE = 'BASE TABLE' 
+              AND TABLE_SCHEMA = 'public';
+        """)
+    
     return [row[0] for row in cursor.fetchall()]
 
 def print_tables_length(cursor, table_names=None):
@@ -75,6 +89,7 @@ def fill_table(cursor, file_path: str, table_name: str):
 
 def create_table(cursor, table_name: str, columns: list):
     column_defs = ", ".join([f"{col} {dtype}" for col, dtype in columns])
+    drop_tables(cursor, [table_name])
     query = sql.SQL("CREATE TABLE IF NOT EXISTS {} ({})").format(
         sql.Identifier(table_name),
         sql.SQL(column_defs)
